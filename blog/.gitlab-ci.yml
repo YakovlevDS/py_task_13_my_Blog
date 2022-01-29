@@ -1,0 +1,24 @@
+# описываем какие этапы нужны в пайплайне
+stages:
+-test
+-build
+-deploy
+
+# описываем задачи (джобы)
+django test:
+  stage: test
+  image: python:3 -alpine
+  script: python 
+   - pip install -r requirements.txt
+   - python manage.py test --noinput
+
+
+docker build:
+  stage: Build
+  image:docker:stable
+  services:
+    - docker:dimd
+    script:
+      - echo $(CI_REGISTRY_IMAGE) 
+      - docker build -t blog:1 .
+      - docker push blog:1
